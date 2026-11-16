@@ -1,0 +1,1079 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>나에게 맞는 직무 유형 테스트</title>
+    <meta
+      name="description"
+      content="12개의 대학생활 질문으로 내 일하는 스타일을 알아보고, 어울리는 직무와 추천 자격증·과목을 확인하는 진로 탐색 테스트입니다."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"IBM Plex Sans KR"', '"Outfit"', 'system-ui', 'sans-serif'],
+              display: ['"Outfit"', '"IBM Plex Sans KR"', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
+    <style>
+      html {
+        font-family: "IBM Plex Sans KR", "Outfit", system-ui, -apple-system, sans-serif;
+        background-color: #edf7fe;
+        color: #0f172a;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-height: 100dvh;
+        background: radial-gradient(120% 80% at 50% 0%, #dff1fe 0%, #f1f8fe 48%, #f8fbff 100%);
+      }
+
+      @keyframes choice-pop {
+        0% {
+          transform: scale(1);
+        }
+        32% {
+          transform: scale(0.965);
+        }
+        68% {
+          transform: scale(1.03);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes fade-slide-in {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-choice-pop {
+        animation: choice-pop 280ms cubic-bezier(0.22, 1.35, 0.36, 1) forwards;
+      }
+
+      .animate-fade-in {
+        animation: fade-slide-in 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .animate-choice-pop,
+        .animate-fade-in {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-dvh flex flex-col text-slate-900">
+    <div id="app-wrapper" class="min-h-dvh flex flex-col transition-colors duration-500">
+      <!-- 상단 바 -->
+      <header class="sticky top-0 z-30 h-14 sm:h-16 bg-white/85 backdrop-blur-md border-b border-sky-100">
+        <div class="max-w-5xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between gap-4">
+          <button
+            id="header-home-btn"
+            type="button"
+            class="text-[17px] sm:text-lg font-bold tracking-tight text-slate-900 hover:text-sky-700 transition-colors cursor-pointer whitespace-nowrap shrink-0 rounded-lg px-1 -ml-1 min-h-[44px] flex items-center"
+          >
+            나에게 맞는 직무 유형 테스트
+          </button>
+
+          <button
+            id="header-reset-btn"
+            type="button"
+            class="hidden min-h-[44px] px-4 py-2 rounded-xl text-sm sm:text-[15px] font-semibold text-sky-700 hover:bg-sky-50 active:bg-sky-100 transition-colors items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+            <span id="header-reset-label">처음으로</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- 메인 컨테이너 -->
+      <main id="main-content" class="flex-1 flex flex-col justify-center px-4 sm:px-6 py-5 sm:py-10"></main>
+
+      <!-- 푸터 -->
+      <footer class="py-5 px-4 text-center text-sm text-slate-600">
+        조별과제 · 동아리 · 아르바이트 경험으로 알아보는 대학생 직무 성향 테스트
+      </footer>
+    </div>
+
+    <script>
+      const ROLE_RESULTS = {
+        PM: {
+          type: 'PM',
+          name: '기획형 PM',
+          shortName: '기획',
+          nickname: '팀의 방향을 그리는 나침반',
+          description: [
+            '여러 사람의 의견이 흩어질 때 핵심 목표를 정리하고, 팀이 나아갈 큰 그림을 그리는 데 강점이 있어요.',
+            '“왜 이 일을 해야 하지?”를 먼저 고민하며 일정과 역할을 조율할 때 가장 빛나는 스타일이에요.',
+            '사람들의 불편함을 찾아 구체적인 서비스 계획으로 엮어내는 기획·PM 직무가 잘 어울려요.',
+          ],
+          theme: {
+            pageBg: 'bg-gradient-to-b from-sky-100/80 via-sky-50 to-blue-50/50',
+            captureBg: '#f0f9ff',
+            heroCardBg: 'bg-gradient-to-br from-sky-50 via-white to-blue-50/80',
+            heroBorder: 'border-sky-200',
+            illustrationBg: 'bg-sky-100/70',
+            accentText: 'text-sky-700',
+            badgeBg: 'bg-sky-100',
+            badgeText: 'text-sky-800',
+            primaryBtn: 'bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white shadow-lg shadow-sky-600/25',
+            secondaryBtn: 'bg-sky-50 hover:bg-sky-100 active:bg-sky-200/70 text-sky-900 border-sky-200',
+            barFill: 'bg-sky-600',
+            barTrack: 'bg-sky-100',
+            divider: 'divide-sky-100 border-sky-100',
+            iconColor: 'text-sky-600',
+          },
+          preparations: [
+            {
+              title: 'SQLD (SQL 개발자)',
+              category: '자격증',
+              reason: '개발·데이터 팀과 원활히 소통하고 근거 있는 기획안을 쓰기 위한 기초 데이터 언어 자격이에요.',
+            },
+            {
+              title: '서비스 기획·프로젝트 관리론',
+              category: '추천 과목',
+              reason: '문제 정의부터 우선순위 설정, 일정 조율까지 실제 협업의 흐름을 익힐 수 있어요.',
+            },
+            {
+              title: '컴퓨터활용능력 1급',
+              category: '자격증',
+              reason: '기획서 작성과 수치 정리에 꼭 필요한 스프레드시트·문서 실무 감각을 빠르게 길러줘요.',
+            },
+          ],
+          synergies: [
+            {
+              type: 'DESIGN',
+              tag: '아이디어 시각화 짝꿍',
+              reason: '기획자가 세운 목표와 사용자 흐름을 직관적이고 매력적인 화면으로 빠르게 구체화해 주어, 팀 아이디어의 완성도가 단숨에 올라가요.',
+            },
+            {
+              type: 'DEV',
+              tag: '실행과 구현의 핵심 파트너',
+              reason: '기능의 우선순위와 현실적인 구현 범위를 함께 조율하며, 머릿속 아이디어를 실제로 동작하는 서비스로 안정감 있게 만들어내요.',
+            },
+          ],
+        },
+        DEV: {
+          type: 'DEV',
+          name: '개발형 엔지니어',
+          shortName: '개발',
+          nickname: '아이디어를 현실로 조립하는 설계자',
+          description: [
+            '막연한 아이디어를 눈앞에서 실제로 움직이는 결과물로 만들어낼 때 큰 성취감을 느끼는 타입이에요.',
+            '복잡한 문제도 원인을 차근차근 쪼개어 논리적으로 풀고, 반복되는 번거로움을 자동화하는 걸 좋아해요.',
+            '보이지 않는 구조까지 꼼꼼하게 다듬어 탄탄한 서비스를 구현하는 개발 직무와 잘 맞아요.',
+          ],
+          theme: {
+            pageBg: 'bg-gradient-to-b from-indigo-100/75 via-slate-50 to-sky-50/50',
+            captureBg: '#eef2ff',
+            heroCardBg: 'bg-gradient-to-br from-indigo-50 via-white to-slate-50',
+            heroBorder: 'border-indigo-200',
+            illustrationBg: 'bg-indigo-100/60',
+            accentText: 'text-indigo-700',
+            badgeBg: 'bg-indigo-100',
+            badgeText: 'text-indigo-800',
+            primaryBtn: 'bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white shadow-lg shadow-indigo-600/25',
+            secondaryBtn: 'bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200/70 text-indigo-900 border-indigo-200',
+            barFill: 'bg-indigo-600',
+            barTrack: 'bg-indigo-100',
+            divider: 'divide-indigo-100 border-indigo-100',
+            iconColor: 'text-indigo-600',
+          },
+          preparations: [
+            {
+              title: '정보처리기사',
+              category: '자격증',
+              reason: '소프트웨어 설계, 운영체제, 데이터베이스 등 개발 직무 전반의 탄탄한 기본기를 정리해줘요.',
+            },
+            {
+              title: '자료구조·웹 프로그래밍 기초',
+              category: '추천 과목',
+              reason: '논리적 문제 해결력을 키우고 내 손으로 직접 작은 서비스를 완성해 보는 경험을 쌓을 수 있어요.',
+            },
+            {
+              title: '리눅스마스터 2급',
+              category: '자격증',
+              reason: '서비스가 실제로 배포되고 동작하는 서버 환경의 원리를 이해하는 데 큰 도움이 돼요.',
+            },
+          ],
+          synergies: [
+            {
+              type: 'PM',
+              tag: '개발 몰입을 돕는 조율자',
+              reason: '개발자가 기능 구현과 기술 구조에 집중할 수 있도록 전체 일정과 요구사항의 우선순위를 깔끔하게 정리해 주는 든든한 파트너예요.',
+            },
+            {
+              type: 'DESIGN',
+              tag: '완성도를 높이는 화면 설계 짝꿍',
+              reason: '명확한 화면 설계와 일관된 컴포넌트를 건네주어 구현 시 시행착오를 줄이고, 사용자가 쓰기 좋은 서비스로 함께 완성해요.',
+            },
+          ],
+        },
+        DESIGN: {
+          type: 'DESIGN',
+          name: '디자인형 프로덕트 디자이너',
+          shortName: '디자인',
+          nickname: '사용자의 마음을 읽는 경험 설계자',
+          description: [
+            '같은 내용이라도 상대방이 훨씬 편하고 기분 좋게 받아들일 수 있는 방법을 본능적으로 고민해요.',
+            '사소한 불편함이나 어색한 화면 흐름을 금세 포착하고, 보기 좋은 조화와 쓰기 편한 배치로 풀어내는 감각이 뛰어나요.',
+            '사용자의 시선과 감정에 공감하며 직관적인 화면과 경험을 만드는 UX/UI 디자인 직무가 잘 어울려요.',
+          ],
+          theme: {
+            pageBg: 'bg-gradient-to-b from-rose-100/75 via-orange-50/40 to-sky-50/40',
+            captureBg: '#fff1f2',
+            heroCardBg: 'bg-gradient-to-br from-rose-50 via-white to-amber-50/60',
+            heroBorder: 'border-rose-200',
+            illustrationBg: 'bg-rose-100/60',
+            accentText: 'text-rose-700',
+            badgeBg: 'bg-rose-100',
+            badgeText: 'text-rose-800',
+            primaryBtn: 'bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white shadow-lg shadow-rose-600/25',
+            secondaryBtn: 'bg-rose-50 hover:bg-rose-100 active:bg-rose-200/70 text-rose-900 border-rose-200',
+            barFill: 'bg-rose-600',
+            barTrack: 'bg-rose-100',
+            divider: 'divide-rose-100 border-rose-100',
+            iconColor: 'text-rose-600',
+          },
+          preparations: [
+            {
+              title: 'GTQ 1급 · 웹디자인기능사',
+              category: '자격증',
+              reason: '그래픽 툴 숙련도와 화면 레이아웃 구성 능력을 객관적으로 보여줄 수 있는 입문 자격이에요.',
+            },
+            {
+              title: 'UX/UI 디자인·인터랙션 개론',
+              category: '추천 과목',
+              reason: '예쁜 화면을 넘어 사용자가 헷갈리지 않는 동선과 사용성을 설계하는 원리를 배워요.',
+            },
+            {
+              title: '시각디자인·타이포그래피 기초',
+              category: '추천 과목',
+              reason: '글자 크기, 여백, 색의 대비를 통해 정보를 명쾌하게 전달하는 조형 감각을 길러줘요.',
+            },
+          ],
+          synergies: [
+            {
+              type: 'DEV',
+              tag: '상상을 현실로 띄우는 파트너',
+              reason: '디자이너가 공들여 설계한 화면 레이아웃과 세심한 움직임을 실제 웹·앱 환경에서 매끄럽게 구현해 주는 최고의 실행 짝꿍이에요.',
+            },
+            {
+              type: 'DATA',
+              tag: '감각에 근거를 더하는 조합',
+              reason: '디자인 시안 중 어떤 배치와 문구가 사용자에게 더 잘 통하는지 수치로 검증해 주어, 디자인 설득력이 훨씬 탄탄해져요.',
+            },
+          ],
+        },
+        DATA: {
+          type: 'DATA',
+          name: '데이터형 애널리스트',
+          shortName: '데이터',
+          nickname: '숫자 속에서 단서를 찾는 탐정',
+          description: [
+            '막연한 감이나 분위기보다 객관적인 근거와 숫자를 확인해야 마음이 놓이는 꼼꼼한 스타일이에요.',
+            '흩어진 기록을 깔끔하게 모아 비교하면서 “진짜 원인이 무엇인지” 숨어 있는 패턴을 찾아내는 데 흥미를 느껴요.',
+            '데이터를 바탕으로 팀에 설득력 있는 해답과 방향을 제시하는 데이터 분석 직무가 잘 어울려요.',
+          ],
+          theme: {
+            pageBg: 'bg-gradient-to-b from-teal-100/75 via-cyan-50/50 to-sky-50/40',
+            captureBg: '#f0fdfa',
+            heroCardBg: 'bg-gradient-to-br from-teal-50 via-white to-cyan-50/70',
+            heroBorder: 'border-teal-200',
+            illustrationBg: 'bg-teal-100/60',
+            accentText: 'text-teal-700',
+            badgeBg: 'bg-teal-100',
+            badgeText: 'text-teal-800',
+            primaryBtn: 'bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white shadow-lg shadow-teal-600/25',
+            secondaryBtn: 'bg-teal-50 hover:bg-teal-100 active:bg-teal-200/70 text-teal-900 border-teal-200',
+            barFill: 'bg-teal-600',
+            barTrack: 'bg-teal-100',
+            divider: 'divide-teal-100 border-teal-100',
+            iconColor: 'text-teal-600',
+          },
+          preparations: [
+            {
+              title: 'ADsP (데이터분석 준전문가)',
+              category: '자격증',
+              reason: '데이터 분석의 전체 흐름과 통계 기초 용어를 체계적으로 익히기 가장 좋은 입문 자격이에요.',
+            },
+            {
+              title: '기초통계학·데이터 시각화',
+              category: '추천 과목',
+              reason: '수치의 의미를 올바르게 해석하고, 남들이 한눈에 이해할 수 있는 그래프로 설득하는 법을 배워요.',
+            },
+            {
+              title: 'SQLD (SQL 개발자)',
+              category: '자격증',
+              reason: '원하는 데이터를 직접 추출하고 조건별로 가공해 분석에 바로 활용할 수 있는 실무 필수 자격이에요.',
+            },
+          ],
+          synergies: [
+            {
+              type: 'PM',
+              tag: '인사이트를 전략으로 바꾸는 짝꿍',
+              reason: '데이터에서 찾아낸 문제 원인과 핵심 패턴을 실제 서비스 개선안과 다음 실행 과제로 빠르게 연결해 주는 최고의 전략 파트너예요.',
+            },
+            {
+              type: 'DEV',
+              tag: '신뢰도 높은 분석 기반 파트너',
+              reason: '분석에 필요한 사용자 행동 기록과 깔끔한 데이터 수집 구조를 구축해 주어, 더 정확하고 깊이 있는 인사이트를 뽑아낼 수 있어요.',
+            },
+          ],
+        },
+      };
+
+      const QUIZ_QUESTIONS = [
+        {
+          id: 1,
+          context: '조별과제 · 첫 회의',
+          question: '교양 조별과제 첫 모임, 아직 아무것도 정해지지 않았다. 내가 가장 먼저 하고 싶은 일은?',
+          options: [
+            { id: 'A', label: '발표일까지의 주차별 일정과 각자 맡을 역할 범위를 먼저 정리한다', role: 'PM' },
+            { id: 'B', label: '발표 자료가 한눈에 들어오도록 전체 컨셉과 시각적 톤을 먼저 떠올린다', role: 'DESIGN' },
+          ],
+        },
+        {
+          id: 2,
+          context: '동아리 · 신입 부원 모집',
+          question: '새 학기 동아리 박람회에서 신입생 모집을 맡게 되었다. 더 끌리는 역할은?',
+          options: [
+            { id: 'A', label: 'QR코드 신청 폼과 자동 안내 메시지 흐름을 깔끔하게 세팅해 둔다', role: 'DEV' },
+            { id: 'B', label: '작년 지원자 시간대·학과별 유입 기록을 살펴보고 홍보 전략을 짠다', role: 'DATA' },
+          ],
+        },
+        {
+          id: 3,
+          context: '아르바이트 · 피크타임',
+          question: '주말 카페 아르바이트 중 주문이 한꺼번에 몰려 정신이 없다. 이때 내 머릿속 생각은?',
+          options: [
+            { id: 'A', label: '함께 일하는 동료들과 포스기·제조·픽업 역할을 바로 나누어 동선을 정리한다', role: 'PM' },
+            { id: 'B', label: '주문 실수가 줄어들도록 포스기 메뉴 배치나 레시피 순서를 손보고 싶다', role: 'DEV' },
+          ],
+        },
+        {
+          id: 4,
+          context: '동아리 · MT 공지 준비',
+          question: '동아리 MT를 앞두고 단톡방에 올릴 안내 자료를 맡았다. 가장 공들이고 싶은 부분은?',
+          options: [
+            { id: 'A', label: '동기들이 스크롤을 멈추고 끝까지 읽고 싶어지는 깔끔한 카드뉴스 디자인', role: 'DESIGN' },
+            { id: 'B', label: '작년 MT 지출 내역과 예상 인원을 계산해 1원 단위까지 맞춘 예산표', role: 'DATA' },
+          ],
+        },
+        {
+          id: 5,
+          context: '교내 공모전 · 아이디어 회의',
+          question: '학교 창업·아이디어 공모전에 나가기 위해 주제를 고르고 있다. 내 결정 기준은?',
+          options: [
+            { id: 'A', label: '우리 팀이 기간 안에 완성할 수 있고 발표 스토리라인이 탄탄한지 본다', role: 'PM' },
+            { id: 'B', label: '설문조사나 공공 통계 수치로 문제의 심각성을 확실히 증명할 수 있는지 본다', role: 'DATA' },
+          ],
+        },
+        {
+          id: 6,
+          context: '팀 프로젝트 · 제출 직전',
+          question: '팀 과제 결과물을 제출하기 전 마지막 점검 시간이다. 내 눈에 가장 먼저 걸리는 것은?',
+          options: [
+            { id: 'A', label: '링크 오류나 버튼 오작동 없이 모든 기능이 정확하게 실행되는지 여부', role: 'DEV' },
+            { id: 'B', label: '글씨 크기와 줄 간격, 여백이 어색하지 않고 처음 보는 사람도 읽기 편한지 여부', role: 'DESIGN' },
+          ],
+        },
+        {
+          id: 7,
+          context: '학생회 · 행사 운영',
+          question: '단과대 학생회나 동아리 운영진으로 일하게 된다면 더 자신 있는 파트는?',
+          options: [
+            { id: 'A', label: '행사 전체 기획안을 쓰고 제휴 업체·교내 부서와 일정을 조율하는 일', role: 'PM' },
+            { id: 'B', label: '신청자 명단 정리와 출석 체크가 자동으로 기록되는 시트·툴을 만드는 일', role: 'DEV' },
+          ],
+        },
+        {
+          id: 8,
+          context: '아르바이트 · 신메뉴 테스트',
+          question: '일하는 매장에서 신메뉴 시음 이벤트를 진행한 뒤 손님 반응을 모았다. 더 궁금한 점은?',
+          options: [
+            { id: 'A', label: '손님들이 컵 홀더 디자인이나 메뉴판 색감을 예쁘다고 느끼고 사진을 찍는지', role: 'DESIGN' },
+            { id: 'B', label: '연령대별 재구매 의향 점수와 가장 주문이 많았던 시간대 수치 비교', role: 'DATA' },
+          ],
+        },
+        {
+          id: 9,
+          context: '전공 수업 · 10분 발표',
+          question: '전공 수업 개인 발표를 준비할 때, 내가 가장 많은 시간을 투자하는 단계는?',
+          options: [
+            { id: 'A', label: '서론에서 결론까지 청중이 고개를 끄덕이게 만드는 대본과 논리 흐름 짜기', role: 'PM' },
+            { id: 'B', label: '복잡한 설명을 도표와 아이콘으로 단순화해 슬라이드 화면을 깔끔하게 다듬기', role: 'DESIGN' },
+          ],
+        },
+        {
+          id: 10,
+          context: '학교 축제 · 부스 운영',
+          question: '대동제 체험 부스를 하루 운영하고 난 뒤, 다음 날을 위해 가장 먼저 해보고 싶은 일은?',
+          options: [
+            { id: 'A', label: '대기 줄이 꼬이지 않도록 웨이팅 알림 순서를 조금 수정해 흐름을 개선한다', role: 'DEV' },
+            { id: 'B', label: '오늘 가장 잘 팔린 메뉴와 시간대별 방문객 수를 표로 정리해 내일 수량을 맞춘다', role: 'DATA' },
+          ],
+        },
+        {
+          id: 11,
+          context: '조별과제 · 의견 충돌',
+          question: '발표 방향을 두고 팀원들의 의견이 팽팽하게 갈렸다. 내가 꺼내는 해결 방식은?',
+          options: [
+            { id: 'A', label: '각 안의 장단점과 우리 팀 목표에 맞는 평가 기준을 세워 합의를 이끌어낸다', role: 'PM' },
+            { id: 'B', label: '주변 학우들에게 빠르게 투표를 받거나 객관적 사례를 찾아 숫자로 비교한다', role: 'DATA' },
+          ],
+        },
+        {
+          id: 12,
+          context: '캠퍼스 생활 · 새 앱 체험',
+          question: '선배가 만든 교내 시간표·맛집 안내 서비스를 처음 써보았다. 먼저 눈길이 가는 부분은?',
+          options: [
+            { id: 'A', label: '페이지가 얼마나 빠르게 열리고, 검색이나 필터 기능이 매끄럽게 작동하는지', role: 'DEV' },
+            { id: 'B', label: '처음 켰을 때 무엇을 눌러야 할지 한눈에 보이고 배치가 편안한지', role: 'DESIGN' },
+          ],
+        },
+      ];
+
+      function getIllustrationSvg(kind) {
+        if (kind === 'HERO') {
+          return `
+            <svg viewBox="0 0 360 270" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="캠퍼스 협업 일러스트">
+              <rect width="360" height="270" fill="#E0F2FE"/>
+              <circle cx="290" cy="54" r="36" fill="#BAE6FD"/>
+              <rect x="40" y="168" width="280" height="22" rx="11" fill="#0284C7"/>
+              <rect x="64" y="190" width="16" height="50" rx="6" fill="#0369A1"/>
+              <rect x="280" y="190" width="16" height="50" rx="6" fill="#0369A1"/>
+              <rect x="122" y="102" width="116" height="66" rx="10" fill="#FFFFFF" stroke="#0284C7" stroke-width="3"/>
+              <rect x="136" y="116" width="44" height="36" rx="6" fill="#E0F2FE"/>
+              <rect x="144" y="134" width="8" height="12" rx="2" fill="#0284C7"/>
+              <rect x="156" y="126" width="8" height="20" rx="2" fill="#0EA5E9"/>
+              <rect x="168" y="120" width="8" height="26" rx="2" fill="#38BDF8"/>
+              <rect x="190" y="118" width="34" height="6" rx="3" fill="#BAE6FD"/>
+              <rect x="190" y="130" width="28" height="6" rx="3" fill="#7DD3FC"/>
+              <rect x="190" y="142" width="20" height="6" rx="3" fill="#BAE6FD"/>
+              <circle cx="88" cy="112" r="20" fill="#FDE68A" stroke="#0F172A" stroke-width="2.5"/>
+              <path d="M58 168C58 148 72 138 88 138C104 138 118 148 118 168" fill="#38BDF8" stroke="#0F172A" stroke-width="2.5"/>
+              <circle cx="272" cy="112" r="20" fill="#FED7AA" stroke="#0F172A" stroke-width="2.5"/>
+              <path d="M242 168C242 148 256 138 272 138C288 138 302 148 302 168" fill="#0284C7" stroke="#0F172A" stroke-width="2.5"/>
+              <rect x="52" y="42" width="66" height="44" rx="10" fill="#FFFFFF" stroke="#7DD3FC" stroke-width="2"/>
+              <circle cx="72" cy="64" r="9" fill="#0EA5E9"/>
+              <rect x="88" y="57" width="20" height="5" rx="2.5" fill="#94A3B8"/>
+              <rect x="88" y="67" width="14" height="5" rx="2.5" fill="#CBD5E1"/>
+            </svg>
+          `;
+        }
+        if (kind === 'PM') {
+          return `
+            <svg viewBox="0 0 280 280" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="기획형 PM 직업 일러스트">
+              <rect width="280" height="280" fill="#E0F2FE"/>
+              <rect x="116" y="44" width="132" height="118" rx="14" fill="#FFFFFF" stroke="#0284C7" stroke-width="3"/>
+              <rect x="132" y="62" width="38" height="28" rx="6" fill="#BAE6FD"/>
+              <rect x="178" y="62" width="54" height="10" rx="5" fill="#0284C7"/>
+              <rect x="178" y="80" width="40" height="8" rx="4" fill="#7DD3FC"/>
+              <path d="M136 122H166L182 108H228" stroke="#0EA5E9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="136" cy="122" r="7" fill="#0284C7"/>
+              <circle cx="182" cy="108" r="7" fill="#38BDF8"/>
+              <circle cx="228" cy="108" r="7" fill="#0284C7"/>
+              <circle cx="76" cy="104" r="24" fill="#FDE68A" stroke="#0F172A" stroke-width="2.5"/>
+              <path d="M60 94C64 82 88 82 94 94" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+              <path d="M36 226C36 172 52 146 76 146C100 146 116 172 116 226H36Z" fill="#0284C7" stroke="#0F172A" stroke-width="2.5"/>
+              <rect x="68" y="164" width="44" height="34" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+              <circle cx="90" cy="181" r="9" fill="#38BDF8"/>
+              <path d="M114 148L142 126" stroke="#0F172A" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          `;
+        }
+        if (kind === 'DEV') {
+          return `
+            <svg viewBox="0 0 280 280" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="개발형 엔지니어 직업 일러스트">
+              <rect width="280" height="280" fill="#E0E7FF"/>
+              <rect x="34" y="42" width="92" height="58" rx="10" fill="#1E1B4B"/>
+              <rect x="46" y="56" width="38" height="6" rx="3" fill="#818CF8"/>
+              <rect x="46" y="70" width="60" height="6" rx="3" fill="#6366F1"/>
+              <rect x="46" y="84" width="46" height="6" rx="3" fill="#C7D2FE"/>
+              <rect x="174" y="46" width="74" height="64" rx="10" fill="#FFFFFF" stroke="#4338CA" stroke-width="2.5"/>
+              <circle cx="211" cy="78" r="16" fill="#E0E7FF" stroke="#4338CA" stroke-width="2.5"/>
+              <circle cx="140" cy="108" r="24" fill="#FED7AA" stroke="#0F172A" stroke-width="2.5"/>
+              <circle cx="132" cy="108" r="6" stroke="#0F172A" stroke-width="2"/>
+              <circle cx="148" cy="108" r="6" stroke="#0F172A" stroke-width="2"/>
+              <path d="M98 214C98 164 114 144 140 144C166 144 182 164 182 214H98Z" fill="#4338CA" stroke="#0F172A" stroke-width="2.5"/>
+              <rect x="92" y="172" width="96" height="56" rx="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+              <circle cx="140" cy="200" r="9" fill="#818CF8"/>
+              <rect x="44" y="228" width="192" height="12" rx="6" fill="#312E81"/>
+            </svg>
+          `;
+        }
+        if (kind === 'DESIGN') {
+          return `
+            <svg viewBox="0 0 280 280" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="디자인형 프로덕트 디자이너 직업 일러스트">
+              <rect width="280" height="280" fill="#FFE4E6"/>
+              <rect x="118" y="44" width="124" height="86" rx="12" fill="#FFFFFF" stroke="#E11D48" stroke-width="2.5"/>
+              <rect x="132" y="58" width="42" height="58" rx="8" fill="#FFF1F2" stroke="#FDA4AF" stroke-width="2"/>
+              <rect x="184" y="58" width="44" height="24" rx="6" fill="#FB7185"/>
+              <rect x="184" y="90" width="44" height="26" rx="6" fill="#FDE68A"/>
+              <circle cx="84" cy="106" r="24" fill="#FDE68A" stroke="#0F172A" stroke-width="2.5"/>
+              <path d="M52 224C52 168 64 146 84 146C106 146 118 168 118 224H52Z" fill="#E11D48" stroke="#0F172A" stroke-width="2.5"/>
+              <rect x="108" y="154" width="128" height="72" rx="12" fill="#1E293B"/>
+              <rect x="120" y="164" width="104" height="52" rx="6" fill="#FFFFFF"/>
+              <circle cx="148" cy="190" r="14" fill="#FDA4AF"/>
+              <rect x="172" y="176" width="40" height="8" rx="4" fill="#E11D48"/>
+              <rect x="172" y="192" width="32" height="8" rx="4" fill="#FECDD3"/>
+              <path d="M168 156L196 196" stroke="#F59E0B" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+          `;
+        }
+        return `
+          <svg viewBox="0 0 280 280" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="데이터형 애널리스트 직업 일러스트">
+            <rect width="280" height="280" fill="#CCFBF1"/>
+            <rect x="38" y="50" width="142" height="106" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="3"/>
+            <rect x="56" y="114" width="16" height="26" rx="4" fill="#99F6E4"/>
+            <rect x="80" y="98" width="16" height="42" rx="4" fill="#2DD4BF"/>
+            <rect x="104" y="82" width="16" height="58" rx="4" fill="#0D9488"/>
+            <circle cx="148" cy="92" r="18" fill="#5EEAD4" stroke="#0F766E" stroke-width="2.5"/>
+            <path d="M148 92V74A18 18 0 0 1 166 92H148Z" fill="#0F766E"/>
+            <circle cx="208" cy="108" r="24" fill="#FED7AA" stroke="#0F172A" stroke-width="2.5"/>
+            <path d="M174 226C174 170 188 148 208 148C228 148 242 170 242 226H174Z" fill="#0F766E" stroke="#0F172A" stroke-width="2.5"/>
+            <circle cx="152" cy="144" r="20" fill="#E0F2FE" fill-opacity="0.7" stroke="#0F172A" stroke-width="3.5"/>
+            <path d="M167 159L184 176" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        `;
+      }
+
+      function calculateQuizResult(answers) {
+        const scores = { PM: 0, DEV: 0, DESIGN: 0, DATA: 0 };
+        answers.forEach((role) => {
+          scores[role] += 1;
+        });
+
+        const maxScore = Math.max(...Object.values(scores));
+        const tiedRoles = Object.keys(scores).filter((r) => scores[r] === maxScore);
+        let winner = tiedRoles[0];
+
+        if (tiedRoles.length > 1) {
+          const h2h = { PM: 0, DEV: 0, DESIGN: 0, DATA: 0 };
+          QUIZ_QUESTIONS.forEach((q, idx) => {
+            const picked = answers[idx];
+            const [optA, optB] = q.options;
+            if (tiedRoles.includes(optA.role) && tiedRoles.includes(optB.role) && picked) {
+              h2h[picked] += 1;
+            }
+          });
+          const maxH2H = Math.max(...tiedRoles.map((r) => h2h[r]));
+          const h2hWinners = tiedRoles.filter((r) => h2h[r] === maxH2H);
+          if (h2hWinners.length === 1) {
+            winner = h2hWinners[0];
+          } else {
+            for (let i = answers.length - 1; i >= 0; i -= 1) {
+              if (h2hWinners.includes(answers[i])) {
+                winner = answers[i];
+                break;
+              }
+            }
+          }
+        }
+
+        const total = Math.max(answers.length, 1);
+        const rankedRoles = Object.keys(scores)
+          .map((key) => ({
+            role: ROLE_RESULTS[key],
+            count: scores[key],
+            percentage: Math.round((scores[key] / total) * 100),
+          }))
+          .sort((a, b) => {
+            if (b.count !== a.count) return b.count - a.count;
+            if (a.role.type === winner) return -1;
+            if (b.role.type === winner) return 1;
+            return 0;
+          });
+
+        return {
+          primaryRole: ROLE_RESULTS[winner],
+          rankedRoles,
+        };
+      }
+
+      // 상태 관리
+      const state = {
+        phase: 'start', // 'start' | 'quiz' | 'result'
+        currentIndex: 0,
+        answers: Array(QUIZ_QUESTIONS.length).fill(null),
+        isTransitioning: false,
+      };
+
+      const wrapperEl = document.getElementById('app-wrapper');
+      const mainEl = document.getElementById('main-content');
+      const headerHomeBtn = document.getElementById('header-home-btn');
+      const headerResetBtn = document.getElementById('header-reset-btn');
+      const headerResetLabel = document.getElementById('header-reset-label');
+
+      function resetToStart() {
+        state.phase = 'start';
+        state.currentIndex = 0;
+        state.answers = Array(QUIZ_QUESTIONS.length).fill(null);
+        state.isTransitioning = false;
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      headerHomeBtn.addEventListener('click', resetToStart);
+      headerResetBtn.addEventListener('click', resetToStart);
+
+      function renderStartScreen() {
+        const roleOrder = ['PM', 'DEV', 'DESIGN', 'DATA'];
+        mainEl.innerHTML = `
+          <div class="w-full max-w-5xl mx-auto space-y-5 sm:space-y-8 animate-fade-in">
+            <section class="rounded-3xl bg-white border border-sky-100 shadow-lg shadow-sky-500/10 overflow-hidden">
+              <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                <div class="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-between gap-7 sm:gap-8">
+                  <div class="space-y-4 sm:space-y-5">
+                    <div class="flex flex-wrap items-center gap-2 text-sm font-semibold text-sky-700">
+                      <span>대학생 2~4학년 진로 탐색</span>
+                      <span aria-hidden="true">·</span>
+                      <span>12문항</span>
+                      <span aria-hidden="true">·</span>
+                      <span>약 2분 소요</span>
+                    </div>
+                    <h1 class="text-[32px] sm:text-4xl lg:text-[44px] font-bold tracking-tight text-slate-900 leading-[1.2]">
+                      나에게 맞는<br />직무 유형 테스트
+                    </h1>
+                    <p class="text-base sm:text-[17px] text-slate-600 leading-[1.7] max-w-xl">
+                      직무 용어를 잘 몰라도 괜찮아요. 조별과제, 동아리, 아르바이트처럼 익숙한 대학생활 상황에서 내가 자주 선택하는 행동을 고르다 보면, 나와 잘 맞는 직무와 미리 준비할 것들을 바로 확인할 수 있어요.
+                    </p>
+                  </div>
+                  <div class="space-y-3">
+                    <button
+                      id="start-quiz-btn"
+                      type="button"
+                      class="w-full sm:w-auto min-h-[60px] px-9 py-4 rounded-2xl bg-sky-600 hover:bg-sky-700 active:scale-[0.97] text-white font-bold text-lg shadow-lg shadow-sky-600/30 flex items-center justify-center gap-2.5 cursor-pointer transition-all"
+                    >
+                      <span>시작하기</span>
+                      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
+                      </svg>
+                    </button>
+                    <p class="text-sm text-slate-500">선택지를 누르면 자동으로 다음 질문으로 넘어가요.</p>
+                  </div>
+                </div>
+                <div class="lg:col-span-5 bg-sky-50/70 border-t lg:border-t-0 lg:border-l border-sky-100 flex items-center justify-center p-4 sm:p-6">
+                  <div class="w-full aspect-[4/3] lg:aspect-auto lg:h-full rounded-2xl overflow-hidden bg-sky-50">
+                    ${getIllustrationSvg('HERO')}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="rounded-3xl bg-white border border-sky-100 shadow-md shadow-sky-500/5 p-6 sm:p-8">
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 mb-5">
+                <h2 class="text-lg font-bold text-slate-900">테스트로 만날 수 있는 4가지 일하는 스타일</h2>
+                <span class="text-sm text-slate-500">기획 · 개발 · 디자인 · 데이터</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                ${roleOrder
+                  .map((key, idx) => {
+                    const role = ROLE_RESULTS[key];
+                    return `
+                      <div class="flex items-start gap-3.5 ${idx > 0 ? 'pt-3.5 sm:pt-0 border-t sm:border-t-0 border-sky-100' : ''}">
+                        <div class="w-11 h-11 rounded-xl overflow-hidden border border-sky-100 shrink-0 mt-0.5">
+                          ${getIllustrationSvg(role.type)}
+                        </div>
+                        <div class="min-w-0">
+                          <p class="text-base font-bold text-slate-900">${role.name}</p>
+                          <p class="text-sm text-slate-600 mt-0.5 leading-snug">${role.nickname}</p>
+                        </div>
+                      </div>
+                    `;
+                  })
+                  .join('')}
+              </div>
+            </section>
+          </div>
+        `;
+
+        document.getElementById('start-quiz-btn').addEventListener('click', () => {
+          state.phase = 'quiz';
+          state.currentIndex = 0;
+          state.answers = Array(QUIZ_QUESTIONS.length).fill(null);
+          render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      function renderQuizScreen() {
+        const q = QUIZ_QUESTIONS[state.currentIndex];
+        const total = QUIZ_QUESTIONS.length;
+        const pct = ((state.currentIndex + 1) / total) * 100;
+        const prevRole = state.answers[state.currentIndex];
+
+        mainEl.innerHTML = `
+          <div class="w-full max-w-3xl mx-auto space-y-4 sm:space-y-6">
+            <div class="rounded-3xl bg-white border border-sky-100 shadow-md shadow-sky-500/5 px-5 py-4 sm:px-7 sm:py-5">
+              <div class="flex items-center justify-between gap-4 mb-3">
+                <div class="flex items-center gap-2">
+                  ${
+                    state.currentIndex > 0
+                      ? `<button id="prev-q-btn" type="button" class="min-h-[48px] -ml-2 px-3 rounded-xl inline-flex items-center gap-1.5 text-[15px] font-semibold text-slate-700 hover:text-sky-700 hover:bg-sky-50 active:bg-sky-100 cursor-pointer">
+                          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                          <span>이전 질문</span>
+                        </button>`
+                      : `<span class="min-h-[48px] inline-flex items-center text-[15px] font-semibold text-sky-700">대학생활 스타일 체크</span>`
+                  }
+                </div>
+                <div class="text-base sm:text-lg font-bold text-sky-700 tabular-nums shrink-0 font-display">
+                  ${state.currentIndex + 1} / ${total}
+                </div>
+              </div>
+              <div class="w-full h-3.5 rounded-full bg-sky-100 overflow-hidden">
+                <div class="h-full rounded-full bg-gradient-to-r from-sky-400 to-sky-600 transition-all duration-300" style="width: ${pct}%"></div>
+              </div>
+            </div>
+
+            <section class="rounded-3xl bg-white border border-sky-100 shadow-lg shadow-sky-500/10 p-6 sm:p-9 lg:p-10 animate-fade-in">
+              <div class="space-y-3 mb-6 sm:mb-8">
+                <p class="text-sm sm:text-[15px] font-semibold text-sky-600">Q${q.id}. ${q.context}</p>
+                <h2 class="text-[21px] sm:text-2xl lg:text-[26px] font-bold text-slate-900 leading-[1.45]">${q.question}</h2>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                ${q.options
+                  .map((opt) => {
+                    const isPicked = prevRole === opt.role;
+                    return `
+                      <button
+                        type="button"
+                        data-option-id="${opt.id}"
+                        data-role="${opt.role}"
+                        class="choice-btn group relative text-left rounded-3xl p-6 sm:p-7 min-h-[144px] sm:min-h-[168px] flex flex-col justify-between gap-4 border-2 transition-colors cursor-pointer ${
+                          isPicked
+                            ? 'bg-sky-50 border-sky-500 shadow-md shadow-sky-500/20'
+                            : 'bg-sky-50/45 hover:bg-sky-50 active:bg-sky-100/70 border-sky-100 hover:border-sky-300'
+                        }"
+                      >
+                        <div class="flex items-center justify-between w-full">
+                          <span class="option-badge w-10 h-10 rounded-2xl text-base font-bold flex items-center justify-center font-display ${
+                            isPicked
+                              ? 'bg-sky-600 text-white'
+                              : 'bg-white text-sky-700 border border-sky-200 group-hover:border-sky-400'
+                          }">${opt.id}</span>
+                          <span class="check-dot w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center ${
+                            isPicked ? '' : 'hidden'
+                          }">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                          </span>
+                        </div>
+                        <p class="text-[17px] sm:text-lg font-semibold text-slate-800 leading-[1.55]">${opt.label}</p>
+                      </button>
+                    `;
+                  })
+                  .join('')}
+              </div>
+            </section>
+          </div>
+        `;
+
+        const prevBtn = document.getElementById('prev-q-btn');
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            if (state.isTransitioning || state.currentIndex === 0) return;
+            state.currentIndex -= 1;
+            render();
+          });
+        }
+
+        document.querySelectorAll('.choice-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            if (state.isTransitioning) return;
+            state.isTransitioning = true;
+
+            const chosenRole = btn.dataset.role;
+            btn.classList.add('animate-choice-pop', 'bg-sky-50', 'border-sky-500');
+            btn.querySelector('.option-badge').className =
+              'option-badge w-10 h-10 rounded-2xl text-base font-bold flex items-center justify-center font-display bg-sky-600 text-white';
+            btn.querySelector('.check-dot').classList.remove('hidden');
+
+            setTimeout(() => {
+              state.answers[state.currentIndex] = chosenRole;
+              state.isTransitioning = false;
+              if (state.currentIndex + 1 < QUIZ_QUESTIONS.length) {
+                state.currentIndex += 1;
+              } else {
+                state.phase = 'result';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+              render();
+            }, 300);
+          });
+        });
+      }
+
+      function renderResultScreen() {
+        const { primaryRole, rankedRoles } = calculateQuizResult(state.answers);
+        const { theme } = primaryRole;
+
+        wrapperEl.className = `min-h-dvh flex flex-col text-slate-900 transition-colors duration-500 ${theme.pageBg}`;
+
+        mainEl.innerHTML = `
+          <div class="w-full max-w-5xl mx-auto space-y-5 sm:space-y-6 animate-fade-in">
+            <div id="capture-area" class="space-y-5 sm:space-y-6 rounded-3xl p-1 sm:p-2 -m-1 sm:-m-2">
+              <section class="rounded-3xl ${theme.heroCardBg} border ${theme.heroBorder} shadow-lg shadow-slate-900/5 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                  <div class="lg:col-span-5 ${theme.illustrationBg} border-b lg:border-b-0 lg:border-r ${theme.heroBorder} p-5 sm:p-7 flex items-center justify-center">
+                    <div class="w-full max-w-[300px] lg:max-w-none aspect-square rounded-2xl overflow-hidden bg-white/70 shadow-sm">
+                      ${getIllustrationSvg(primaryRole.type)}
+                    </div>
+                  </div>
+                  <div class="lg:col-span-7 p-6 sm:p-9 lg:p-11 flex flex-col justify-between gap-7">
+                    <div class="space-y-4">
+                      <p class="text-sm sm:text-base font-bold ${theme.accentText}">
+                        12개 질문 분석 결과 · 나와 가장 잘 맞는 직무
+                      </p>
+                      <div class="space-y-2.5">
+                        <h1 class="text-[36px] sm:text-5xl lg:text-[52px] font-extrabold tracking-tight text-slate-900 leading-[1.15]">
+                          ${primaryRole.name}
+                        </h1>
+                        <p class="text-xl sm:text-2xl font-bold ${theme.accentText}">
+                          “${primaryRole.nickname}”
+                        </p>
+                      </div>
+                      <div class="pt-2 space-y-3 text-base sm:text-[17px] text-slate-700 leading-[1.7]">
+                        ${primaryRole.description.map((p) => `<p>${p}</p>`).join('')}
+                      </div>
+                    </div>
+
+                    <div data-capture-ignore="true" class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 pt-2">
+                      <button
+                        id="download-png-btn"
+                        type="button"
+                        class="w-full sm:w-auto min-h-[58px] px-6 py-4 rounded-2xl font-bold text-[17px] inline-flex items-center justify-center gap-2.5 cursor-pointer transition-all whitespace-nowrap ${theme.primaryBtn}"
+                      >
+                        <span>PNG 이미지 저장</span>
+                      </button>
+                      <button
+                        id="share-copy-btn"
+                        type="button"
+                        class="w-full sm:w-auto min-h-[58px] px-6 py-4 rounded-2xl border font-bold text-[17px] inline-flex items-center justify-center gap-2.5 cursor-pointer transition-all whitespace-nowrap ${theme.secondaryBtn}"
+                      >
+                        <span>공유하기</span>
+                      </button>
+                      <button
+                        id="result-restart-btn"
+                        type="button"
+                        class="w-full sm:w-auto min-h-[58px] px-6 py-4 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[17px] inline-flex items-center justify-center gap-2 cursor-pointer transition-all whitespace-nowrap"
+                      >
+                        <span>다시하기</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
+                <section class="lg:col-span-7 rounded-3xl bg-white border ${theme.heroBorder} shadow-md shadow-slate-900/5 p-6 sm:p-8">
+                  <div class="flex flex-wrap items-baseline justify-between gap-2 mb-5">
+                    <h2 class="text-xl font-bold text-slate-900">미리 준비하면 좋은 자격증 · 과목 3가지</h2>
+                    <span class="text-sm font-medium text-slate-500">학부생 추천</span>
+                  </div>
+                  <ol class="divide-y ${theme.divider}">
+                    ${primaryRole.preparations
+                      .map(
+                        (item, idx) => `
+                        <li class="py-4 sm:py-5 first:pt-1 last:pb-1 flex items-start gap-4">
+                          <span class="w-9 h-9 rounded-xl ${theme.badgeBg} ${theme.badgeText} font-bold text-base flex items-center justify-center shrink-0 mt-0.5 tabular-nums font-display">0${idx + 1}</span>
+                          <div class="min-w-0 flex-1 space-y-1.5">
+                            <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                              <h3 class="text-[17px] sm:text-lg font-bold text-slate-900">${item.title}</h3>
+                              <span class="text-sm font-semibold ${theme.accentText}">· ${item.category}</span>
+                            </div>
+                            <p class="text-[15px] sm:text-base text-slate-600 leading-relaxed">${item.reason}</p>
+                          </div>
+                        </li>
+                      `
+                      )
+                      .join('')}
+                  </ol>
+                </section>
+
+                <section class="lg:col-span-5 rounded-3xl bg-white border ${theme.heroBorder} shadow-md shadow-slate-900/5 p-6 sm:p-8 flex flex-col justify-between gap-6">
+                  <div>
+                    <div class="flex items-baseline justify-between gap-2 mb-5">
+                      <h2 class="text-xl font-bold text-slate-900">나의 직무 성향 분포</h2>
+                      <span class="text-sm font-medium text-slate-500 tabular-nums">총 12문항 기준</span>
+                    </div>
+                    <div class="space-y-4">
+                      ${rankedRoles
+                        .map(
+                          (entry, idx) => `
+                          <div class="space-y-2">
+                            <div class="flex items-center justify-between text-[15px] sm:text-base">
+                              <span class="${idx === 0 ? `font-bold ${theme.accentText}` : 'font-semibold text-slate-700'}">${entry.role.name}</span>
+                              <span class="text-slate-600 tabular-nums font-semibold">${entry.count}개 (${entry.percentage}%)</span>
+                            </div>
+                            <div class="w-full h-3 rounded-full ${theme.barTrack} overflow-hidden">
+                              <div class="h-full rounded-full ${idx === 0 ? theme.barFill : 'bg-slate-300'}" style="width: ${Math.max(entry.percentage, 5)}%"></div>
+                            </div>
+                          </div>
+                        `
+                        )
+                        .join('')}
+                    </div>
+                  </div>
+                  <p class="text-sm sm:text-[15px] text-slate-600 leading-relaxed pt-4 border-t ${theme.divider}">
+                    두 번째로 높게 나온 직무의 역량을 함께 챙기면, 팀 프로젝트나 인턴십에서 협업 폭이 훨씬 넓어져요.
+                  </p>
+                </section>
+              </div>
+
+              <section class="rounded-3xl bg-white border ${theme.heroBorder} shadow-md shadow-slate-900/5 p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
+                  <h2 class="text-xl font-bold text-slate-900">함께 일하면 시너지가 좋은 직무 유형 2가지</h2>
+                  <span class="text-sm font-medium text-slate-500">조별과제 · 팀 프로젝트 추천 조합</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                  ${primaryRole.synergies
+                    .map((syn, idx) => {
+                      const partner = ROLE_RESULTS[syn.type];
+                      return `
+                        <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-5 pt-5 md:pt-0 ${
+                          idx === 1 ? `border-t md:border-t-0 md:border-l ${theme.divider} md:pl-6` : ''
+                        }">
+                          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden shrink-0 border ${partner.theme.heroBorder} ${partner.theme.illustrationBg}">
+                            ${getIllustrationSvg(partner.type)}
+                          </div>
+                          <div class="min-w-0 flex-1 space-y-1.5">
+                            <p class="text-sm font-bold ${partner.theme.accentText}">${syn.tag}</p>
+                            <div class="flex flex-wrap items-baseline gap-x-2">
+                              <h3 class="text-lg sm:text-xl font-bold text-slate-900">${partner.name}</h3>
+                              <span class="text-sm font-medium text-slate-500">· ${partner.nickname}</span>
+                            </div>
+                            <p class="text-[15px] sm:text-base text-slate-600 leading-relaxed">${syn.reason}</p>
+                          </div>
+                        </div>
+                      `;
+                    })
+                    .join('')}
+                </div>
+              </section>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('result-restart-btn').addEventListener('click', resetToStart);
+
+        const shareBtn = document.getElementById('share-copy-btn');
+        shareBtn.addEventListener('click', async () => {
+          const shareText = `[나에게 맞는 직무 유형 테스트]\n나의 직무 유형: ${primaryRole.name}\n"${primaryRole.nickname}"\n\n${primaryRole.description.join(' ')}\n\n추천 자격증·과목:\n${primaryRole.preparations
+            .map((item, idx) => `${idx + 1}. ${item.title} (${item.category})`)
+            .join('\n')}`;
+
+          let copied = false;
+          try {
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(shareText);
+              copied = true;
+            }
+          } catch {}
+
+          if (!copied) {
+            const ta = document.createElement('textarea');
+            ta.value = shareText;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+              copied = document.execCommand('copy');
+            } catch {}
+            document.body.removeChild(ta);
+          }
+
+          if (copied) {
+            shareBtn.textContent = '클립보드에 복사되었어요!';
+            setTimeout(() => {
+              shareBtn.textContent = '공유하기';
+            }, 2400);
+          }
+        });
+
+        const downloadBtn = document.getElementById('download-png-btn');
+        downloadBtn.addEventListener('click', async () => {
+          const captureEl = document.getElementById('capture-area');
+          if (!captureEl || !window.htmlToImage) return;
+
+          downloadBtn.disabled = true;
+          downloadBtn.textContent = '이미지 만드는 중...';
+          try {
+            if (document.fonts && document.fonts.ready) {
+              await document.fonts.ready;
+            }
+            const dataUrl = await window.htmlToImage.toPng(captureEl, {
+              pixelRatio: 2,
+              backgroundColor: theme.captureBg,
+              filter: (node) =>
+                !(node instanceof HTMLElement && node.dataset && node.dataset.captureIgnore === 'true'),
+            });
+            const link = document.createElement('a');
+            link.download = `직무유형테스트_${primaryRole.shortName}.png`;
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            downloadBtn.textContent = 'PNG로 저장했어요!';
+          } catch {
+            downloadBtn.textContent = '다시 저장 시도';
+          } finally {
+            downloadBtn.disabled = false;
+            setTimeout(() => {
+              downloadBtn.textContent = 'PNG 이미지 저장';
+            }, 2400);
+          }
+        });
+      }
+
+      function render() {
+        if (state.phase === 'start') {
+          wrapperEl.className = 'min-h-dvh flex flex-col text-slate-900 transition-colors duration-500';
+          headerResetBtn.classList.add('hidden');
+          headerResetBtn.classList.remove('inline-flex');
+          renderStartScreen();
+        } else if (state.phase === 'quiz') {
+          wrapperEl.className = 'min-h-dvh flex flex-col text-slate-900 transition-colors duration-500';
+          headerResetBtn.classList.remove('hidden');
+          headerResetBtn.classList.add('inline-flex');
+          headerResetLabel.textContent = '처음으로';
+          renderQuizScreen();
+        } else {
+          headerResetBtn.classList.remove('hidden');
+          headerResetBtn.classList.add('inline-flex');
+          headerResetLabel.textContent = '다시하기';
+          renderResultScreen();
+        }
+      }
+
+      render();
+    </script>
+  </body>
+</html>
